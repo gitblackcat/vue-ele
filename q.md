@@ -17,3 +17,26 @@
 - 为什么要使用`Vue.set`?
 
 当对一个对象动态添加一个新属性的时候,js是不能响应式检测到的,所以我们要手动使其能够检测到
+
+- 在自适应的状态下,怎么解决因为宽度是整屏幕宽,却要求高度和宽度保持一个尺寸的问题
+
+```html
+<style>
+.image-header{
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 100%; //padding的top或者bottom的100%就是计算盒模型的宽度
+}
+.image-header img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+</style>
+<div class="image-header">
+    <img :src="food.image">
+</div>
+```

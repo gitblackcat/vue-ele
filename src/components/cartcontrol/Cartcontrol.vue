@@ -63,5 +63,4 @@ export default {
             text-align center
             font-size 10px
             color rgb(147,153,159)
-        // .cart-add
 </style>

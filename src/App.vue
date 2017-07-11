@@ -26,7 +26,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/api/seller').then((res) => {
+        this.$http.get('https://www.easy-mock.com/mock/5935507491470c0ac1018212/vue-ele/vue-ele/seller').then((res) => {
             let data = res.data
             if (data.errno === ERR_OK) {
                 this.seller = data.data

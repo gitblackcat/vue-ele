@@ -1,51 +1,55 @@
 <template>
-    <div class="goods">
-        <div class="menu-wrapper" ref="menuWrapper">
-            <ul>
-                <li v-for="(item,index) in goods" class="menu-item" :class="{'current': currentIndex === index}" @click="selectMenu($event,index)">
-                    <p class="text border-1px">
-                        <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>
-                        {{item.name}}
-                    </p>
-                </li>
-            </ul>
+    <div>
+        <div class="goods">
+            <div class="menu-wrapper" ref="menuWrapper">
+                <ul>
+                    <li v-for="(item,index) in goods" class="menu-item" :class="{'current': currentIndex === index}" @click="selectMenu($event,index)">
+                        <p class="text border-1px">
+                            <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>
+                            {{item.name}}
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <div class="foods-wrapper" ref="foodWrapper">
+                <ul>
+                    <li v-for="item in goods" class="food-list food-list-hook">
+                        <h1 class="title">{{item.name}}</h1>
+                        <ul>
+                            <li v-for="food in item.foods" class="food-item border-1px" @click="selectFood($event,food)">
+                                <div class="icon">
+                                    <img :src="food.icon" width="57" height="57">
+                                </div>
+                                <div class="content">
+                                    <h2 class="name">{{food.name}}</h2>
+                                    <p v-if="food.description" class="desc">{{food.description}}</p>
+                                    <div class="extra">
+                                        <span class="count">月售{{food.sellCount}}份</span>
+                                        <span>好评率{{food.rating}}%</span>
+                                    </div>
+                                    <div class="price">
+                                        <span class="now">￥{{food.price}}</span>
+                                        <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
+                                    </div>
+                                    <div class="cartcontrol-wrapper">
+                                        <vCart :food="food" @computedH="computedH"></vCart>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <vShopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></vShopcart>
         </div>
-        <div class="foods-wrapper" ref="foodWrapper">
-            <ul>
-                <li v-for="item in goods" class="food-list food-list-hook">
-                    <h1 class="title">{{item.name}}</h1>
-                    <ul>
-                        <li v-for="food in item.foods" class="food-item border-1px">
-                            <div class="icon">
-                                <img :src="food.icon" width="57" height="57">
-                            </div>
-                            <div class="content">
-                                <h2 class="name">{{food.name}}</h2>
-                                <p v-if="food.description" class="desc">{{food.description}}</p>
-                                <div class="extra">
-                                    <span class="count">月售{{food.sellCount}}份</span>
-                                    <span>好评率{{food.rating}}%</span>
-                                </div>
-                                <div class="price">
-                                    <span class="now">￥{{food.price}}</span>
-                                    <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
-                                </div>
-                                <div class="cartcontrol-wrapper">
-                                    <vCart :food="food" @computedH="computedH"></vCart>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <vShopcart ref="shopcart" :select-foods="selectFood" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></vShopcart>
+        <vFood :food="selectedFood" ref="food"></vFood>
     </div>
 </template>
 <script>
 import bScroll from 'better-scroll'
 import vShopcart from '../shopcart/Shopcart.vue'
 import vCart from '../cartcontrol/Cartcontrol.vue'
+import vFood from '../food/Food.vue'
 
 const ERR_OK = 0
 
@@ -58,7 +62,7 @@ export default {
     created() {
         this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
 
-        this.$http.get('/api/goods').then((response) => {
+        this.$http.get('https://www.easy-mock.com/mock/5935507491470c0ac1018212/vue-ele/vue-ele/goods').then((response) => {
             let data = response.data
             if (data.errno === ERR_OK) {
                 this.goods = data.data
@@ -76,7 +80,8 @@ export default {
         return {
             goods: [],
             listHeight: [],
-            scrollY: 0
+            scrollY: 0,
+            selectedFood: {}
         }
     },
     computed: {
@@ -91,7 +96,7 @@ export default {
             }
             return 0
         },
-        selectFood() {
+        selectFoods() {
             let foods = []
             this.goods.forEach((good) => {
                 good.foods.forEach((food) => {
@@ -140,11 +145,19 @@ export default {
         computedH(el) {
             // console.log(this.$refs.shopcart)
             this.$refs.shopcart.dropSon(el)
+        },
+        selectFood($event, food) {
+            if (!$event._constructed) {
+                return
+            }
+            this.selectedFood = food
+            this.$refs.food.show()
         }
     },
     components: {
         vShopcart,
-        vCart
+        vCart,
+        vFood
     }
 }
 </script>
