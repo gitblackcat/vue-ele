@@ -32,7 +32,7 @@
                                         <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                                     </div>
                                     <div class="cartcontrol-wrapper">
-                                        <vCart :food="food" @computedH="computedH"></vCart>
+                                        <vCart :food="food" @computedH="computedHeight"></vCart>
                                     </div>
                                 </div>
                             </li>
@@ -42,7 +42,7 @@
             </div>
             <vShopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></vShopcart>
         </div>
-        <vFood :food="selectedFood" ref="food"></vFood>
+        <vFood :food="selectedFood" ref="food" @computedH="computedHeight"></vFood>
     </div>
 </template>
 <script>
@@ -142,8 +142,7 @@ export default {
 
             this.foodScroll.scrollToElement(el, 300)
         },
-        computedH(el) {
-            // console.log(this.$refs.shopcart)
+        computedHeight(el) {
             this.$refs.shopcart.dropSon(el)
         },
         selectFood($event, food) {

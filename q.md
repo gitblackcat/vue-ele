@@ -26,7 +26,7 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-top: 100%; //padding的top或者bottom的100%就是计算盒模型的宽度
+    padding-top: 100%; //padding的四个方向的100%都是计算盒模型的宽度
 }
 .image-header img{
     position: absolute;
