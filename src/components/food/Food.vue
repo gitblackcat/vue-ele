@@ -30,6 +30,11 @@
                     <div class="title">商品信息</div>
                     <p class="text">{{food.info}}</p>
                 </div>
+                <vSplit></vSplit>
+                <div class="rating">
+                    <h1 class="title">商品评价</h1>
+                    <vRating :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></vRating>
+                </div>
             </div>
         </div>
     </transition>
@@ -39,6 +44,12 @@ import bScroll from 'better-scroll'
 import Vue from 'vue'
 import vCart from '../cartcontrol/Cartcontrol.vue'
 import vSplit from '../split/Split.vue'
+import vRating from '../ratingSelect/RatingSelect.vue'
+
+const POSITIVE = 0,
+    NEGATIVE = 1,
+    ALL = 2
+
 export default {
     props: {
         food: {
@@ -47,12 +58,21 @@ export default {
     },
     data() {
         return {
-            showFlag: false
+            showFlag: false,
+            selectType: ALL,
+            onlyContent: true,
+            desc: {
+                all: "全部",
+                positive: "推荐",
+                negative: "吐槽"
+            }
         }
     },
     methods: {
         show() {
             this.showFlag = true
+            this.selectType = ALL
+            this.onlyContent = true
             this.$nextTick(() => {
                 if (!this.scroll) {
                     this.scroll = new bScroll(this.$refs.food, {
@@ -76,7 +96,8 @@ export default {
     },
     components: {
         vCart,
-        vSplit
+        vSplit,
+        vRating
     }
 }
 </script>
@@ -85,7 +106,7 @@ export default {
         position fixed
         left 0
         top 0
-        bottom 48px
+        bottom 50px
         z-index 3
         width 100%
         background #fff
@@ -179,4 +200,11 @@ export default {
                 font-size 12px
                 padding 0 8px
                 color rgb(77,85,93)
+        .rating
+            padding-top 18px
+            .title
+                line-height 14px
+                margin-left 18px
+                font-size 14px
+                color rgb(7,17,27)   
 </style>
