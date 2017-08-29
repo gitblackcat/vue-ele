@@ -40,3 +40,38 @@
     <img :src="food.image">
 </div>
 ```
+
+- 如何在组件里面使用`central event bus`
+
+在初始化web app的时候,给data添加一个 名字为`bus`的空vue对象
+
+```javascript
+new Vue({
+    el: '#app',
+    router,
+    render: h => h(App),
+    data: {
+    bus: new Vue()
+    }
+})
+```
+
+好的 这个时候 你就可以一劳永逸了,在任何组件都可以调用事件发射 接受的方法了.
+
+如何获取到这个空的vue对象`bus`呢.在组件里面直接调用这个
+
+某一个组件内调用事件触发
+
+```javascript
+//通过this.$root.bus获取此对象
+//调用$emit 方法
+this.$root.bus.$emit('YOUR_EVENT_NAME', yourData)
+```
+
+另一个组件内调用事件接受,当然在组件销毁时接触绑定,使用`$on`方法
+
+```javascript
+this.$root.bus.$on('YOUR_EVENT_NAME', (yourData)=>{
+    handle(yourData)
+} )
+```
