@@ -25,8 +25,10 @@ export default {
         itemClasses() {
             let result = [],
                 score = Math.floor(this.score * 2) / 2,
-                hasDecimal = score % 1 !== 0,
-                integer = Math.floor(score)
+                // hasDecimal = score % 1 !== 0,
+                hasDecimal = !Number.isInteger(score),
+                // integer = Math.floor(score)
+                integer = Math.trunc(score)
 
             for (let i = 0; i < integer; i++) {
                 result.push(CLS_ON)

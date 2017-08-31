@@ -75,3 +75,126 @@ this.$root.bus.$on('YOUR_EVENT_NAME', (yourData)=>{
     handle(yourData)
 } )
 ```
+
+怎么调用`vuex`的`modules`里面的东西
+
+mutations.js
+
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const modulesA = {
+    state: {
+        count: 0
+    },
+    mutations: {
+        increment(state) {
+            state.count++
+        },
+        decrease(state) {
+            state.count--
+        }
+    },
+    actions: {
+        increment({
+            state,
+            commit,
+            rootState
+        }) {
+            commit('increment')
+        },
+        decrease({
+            state,
+            commit,
+            rootState
+        }) {
+            commit('decrease')
+        }
+    },
+    getters: {
+        bigCount(state, getters, rootState) {
+            return state.count + 1
+        }
+    }
+}
+
+export default new Vuex.Store({
+    modules: {
+        a: modulesA
+    }
+})
+
+```
+
+main.js
+
+```javascript
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+import store from './store/mutations.js'
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: {
+        App
+    }
+})
+```
+
+Hello.vue
+
+```
+<template>
+    <div class="hello">
+        <span @click="decrease">-</span>
+        <span>{{count}}</span>
+        <span @click="increment">+</span>
+        <span>我总是大一{{bigCount}}</span>
+    </div>
+</template>
+
+<script>
+import { mapState, mapActions, mapGetters } from 'vuex'
+
+export default {
+    name: 'hello',
+    computed: {
+        ...mapState({
+            count: state => state.a.count
+        }),
+        ...mapGetters({
+            bigCount: 'bigCount'
+        })
+    },
+    methods: {
+        decrease() {
+            this.$store.dispatch('decrease')
+        },
+        increment() {
+            this.$store.dispatch('increment')
+        }
+    }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="stylus">
+.hello
+    text-align center
+
+span
+    font-size 20px
+    font-weight 700
+    color #333
+</style>
+```
